@@ -1,0 +1,133 @@
+<div>
+    <!--<h3>Architetture Software -  Progetto</h3>-->
+    <div class="row" style="padding-top: 20px;">
+
+        <div class="col-md-12" align="center">
+            <!--<h4>Pazienti</h4>-->
+            <div class="text-center" style="padding: 10px;">
+                <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#addNewPatient">Nuovo Paziente</button>
+            </div>
+            <table class="table table-bordered" style="width: 50%;">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Nome</th>
+                    <th>Cognome</th>
+                    <!--<th>eMail</th>-->
+                    <!--<th>Telefono</th>-->
+                    <!--<th>Residenza</th>-->
+                    <th>Operazione</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="patient in patients track by $index">
+                    <th scope="row">{{$index + 1}}</th>
+                    <td><b>{{patient.name}}</b></td>
+                    <td><b>{{patient.surname}}</b></td>
+                    <!--<td><a ng-href="mailto:'+ patient.email +'" target="_top">{{patient.email}}</a></td>-->
+                    <!--<td>{{patient.phone_number}}</td>-->
+                    <!--<td>{{patient.address}}</td>-->
+                    <td>
+                        <button type="button" class="btn btn-info btn-sm" data-toggle="modal" ng-click="patientDetail(patient)" data-target="#patientDetails">Dettagli</button>
+                        <button type="button" class="btn btn-warning btn-sm" data-toggle="modal" ng-click="setCurrDoctor(patient)" data-target="#patientModify">Modifica</button>
+                        <button type="button" class="btn btn-danger btn-sm" ng-click="deletePatient(patient)">Elimina</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+
+<!--Modal add new patient-->
+<div id="addNewPatient" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Aggiungi nuovo paziente</h4>
+            </div>
+            <div class="modal-body">
+				<span ng-if="errorAddNewPatient" style="text-align: center; color: red;">
+					<h4>{{errorAddNewPatient}}</h4>
+				</span>
+				<span ng-if="successAddNewPatient" style="text-align: center; color: green;">
+					<h4>{{successAddNewPatient}}</h4>
+				</span>
+                <p><input type="text" class="form-control" placeholder="Nome Dottore" name="input" ng-model="newPatient.name"
+                          ng-pattern="newPatient.name" required ng-trim="false"/></p>
+                <p><input type="text" class="form-control" placeholder="Cognome Dottore" name="input" ng-model="newPatient.surname"
+                          ng-pattern="newPatient.surname" required ng-trim="false"/></p>
+                <p><input type="text" class="form-control" placeholder="Specializzazione" name="input" ng-model="newPatient.phone_number"
+                          ng-pattern="newPatient.type" required ng-trim="false"/></p>
+                <p><input type="text" class="form-control" placeholder="Indirizzo studio medico" name="input" ng-model="newPatient.address"
+                          ng-pattern="newPatient.address" required ng-trim="false"/></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success btn-sm" ng-click="addNewPatient()">Conferma</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!--end modal-->
+
+<!--Modal patient detail-->
+<div id="patientDetails" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Dettagli Dottore <u>{{currPatient.name.substring(0,1)}}. {{currPatient.surname}}</u></h4>
+            </div>
+            <div class="modal-body">
+                <h3>Dettagli dottore</h3>
+                Nome: <b>{{currPatient.name}}</b><br>
+                Cognome: <b>{{currPatient.surname}}</b><br>
+                Residente: <b>{{currPatient.address}}</b><br>
+                eMail: <b><a ng-href="mailto:'+ patient.email +'" target="_top">{{currPatient.email}}</a></b><br>
+                Telefono: <b>{{currPatient.phone_number}}</b><br>
+            </div>
+            <div class="modal-footer">
+                <!--<button type="button" class="btn btn-success btn-sm">Conferma</button>-->
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!--end modal-->
+<!--Modal patient modify-->
+<div id="patientModify" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Modifica <u>{{currPatientToModify.name.substring(0,1)}}. {{currPatientToModify.surname}}</u></h4>
+            </div>
+            <div class="modal-body">
+                <h3>Modifica dettagli dottore</h3>
+                Nome: <input type="text" ng-model="currPatientToModify.name"><br>
+                Cognome: <input type="text" ng-model="currPatientToModify.surname"><br>
+                Residenza: <input type="text" ng-model="currPatientToModify.address"><br>
+                eMail: <input type="text" ng-model="currPatientToModify.email"><br>
+                Telefono: <input type="text" ng-model="currPatientToModify.phone_number"><br>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success btn-sm" ng-click="updatePatient(currPatientToModify)" data-dismiss="modal">Conferma</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!--end modal-->

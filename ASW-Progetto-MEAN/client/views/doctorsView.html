@@ -1,0 +1,157 @@
+<div>
+    <!--<h3>Architetture Software -  Progetto</h3>-->
+    <div class="row" style="padding-top: 20px;">
+
+        <div class="col-md-12" align="center">
+            <!--<h4>Dottori</h4>-->
+            <div class="text-center" style="padding: 10px;">
+                <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#addNewDoctor">Nuovo Dottore</button>
+            </div>
+            <table class="table table-bordered" style="width: 50%;">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Nome</th>
+                    <th>Cognome</th>
+                    <th>Specializzazione</th>
+                    <!--<th>Residenza</th>-->
+                    <th>Operazioni</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="doctor in doctors track by $index">
+                    <th scope="row">{{$index + 1}}</th>
+                    <td><b>{{doctor.name}}</b></td>
+                    <td><b>{{doctor.surname}}</b></td>
+                    <td>{{doctor.type}}</td>
+                    <!--<td>{{doctor.address}}</td>-->
+                    <td>
+                        <button type="button" class="btn btn-info btn-sm" data-toggle="modal" ng-click="doctorDetail(doctor)" data-target="#doctorDetails">Dettagli</button>
+                        <button type="button" class="btn btn-warning btn-sm" data-toggle="modal" ng-click="setCurrDoctor(doctor)" data-target="#doctorModify">Modifica</button>
+                        <button type="button" class="btn btn-danger btn-sm" ng-click="deleteDoctor(doctor)">Elimina</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+
+<!--Modal add new doctor-->
+<div id="addNewDoctor" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Aggiungi nuovo dottore</h4>
+            </div>
+            <div class="modal-body">
+				<span ng-if="errorAddNewDoctor" style="text-align: center; color: red;">
+					<h4>{{errorAddNewDoctor}}</h4>
+				</span>
+				<span ng-if="successAddNewDoctor" style="text-align: center; color: green;">
+					<h4>{{successAddNewDoctor}}</h4>
+				</span>
+                <p><input type="text" class="form-control" placeholder="Nome Dottore" name="input" ng-model="newDoctor.name"
+                          ng-pattern="newDoctor.name" required ng-trim="false"/></p>
+                <p><input type="text" class="form-control" placeholder="Cognome Dottore" name="input" ng-model="newDoctor.surname"
+                          ng-pattern="newDoctor.surname" required ng-trim="false"/></p>
+                <p><input type="text" class="form-control" placeholder="Specializzazione" name="input" ng-model="newDoctor.type"
+                          ng-pattern="newDoctor.type" required ng-trim="false"/></p>
+                <p><input type="text" class="form-control" placeholder="Indirizzo studio medico" name="input" ng-model="newDoctor.address"
+                          ng-pattern="newDoctor.address" required ng-trim="false"/></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success btn-sm" ng-click="addNewDoctor()">Conferma</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!--end modal-->
+
+<!--Modal doctor detail-->
+<div id="doctorDetails" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Dettagli Dottore <u>{{currDoctor.name.substring(0,1)}}. {{currDoctor.surname}}</u></h4>
+            </div>
+            <div class="modal-body">
+                <h3>Dettagli dottore</h3>
+                Nome: <b>{{currDoctor.name}}</b><br>
+                Cognome: <b>{{currDoctor.surname}}</b><br>
+                Residente: <b>{{currDoctor.address}}</b><br>
+                Specializzazione: <b>{{currDoctor.type}}</b><br>
+                <div style="padding-top: 10px;">
+                    <h3>Pazienti</h3>
+                    <div ng-if="!currDoctor.patientsDetail || currDoctor.patientsDetail.length <= 0">
+                        <h5>Non ci sono pazienti associati a questo profilo.</h5>
+                    </div>
+                    <table ng-if="currDoctor.patientsDetail.length > 0" class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Nome</th>
+                            <th>Cognome</th>
+                            <th>eMail</th>
+                            <th>Telefono</th>
+                            <th>Residenza</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="patient in currDoctor.patientsDetail track by $index">
+                            <th scope="row">{{$index + 1}}</th>
+                            <td><b>{{patient.name}}</b></td>
+                            <td><b>{{patient.surname}}</b></td>
+                            <td><a ng-href="mailto:'+ patient.email +'" target="_top">{{patient.email}}</a></td>
+                            <td>{{patient.phone_number}}</td>
+                            <td>{{patient.address}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <!--<button type="button" class="btn btn-success btn-sm">Conferma</button>-->
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!--end modal-->
+<!--Modal doctor modify-->
+<div id="doctorModify" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Modifica <u>{{currDoctorToModify.name.substring(0,1)}}. {{currDoctorToModify.surname}}</u></h4>
+            </div>
+            <div class="modal-body">
+                <h3>Modifica dettagli dottore</h3>
+                Nome: <input type="text" ng-model="currDoctorToModify.name"><br>
+                Cognome: <input type="text" ng-model="currDoctorToModify.surname"><br>
+                Residenza: <input type="text" ng-model="currDoctorToModify.address"><br>
+                Specializzazione: <input type="text" ng-model="currDoctorToModify.type"><br>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success btn-sm" ng-click="updateDoctor(currDoctorToModify)" data-dismiss="modal">Conferma</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!--end modal-->
