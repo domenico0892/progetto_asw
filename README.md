@@ -2,7 +2,7 @@
 ####di Tommaso D'Ambroso, Claudio Del Nero, Lorenzo D'Isidoro e Domenico Giammarino
 
 ####Requisiti:
-Richiede *VirtualBox* e *Vagrant*
+Richiede l'installazione di [VirtualBox](https://www.virtualbox.org/wiki/Downloads) e [Vagrant](https://www.vagrantup.com/downloads.html)
 
 ####Istruzioni:
 1. Scaricare la cartella della repository e decomprimerla
