@@ -106,6 +106,7 @@ angular.module('doctorsCtrl', ['doctorsService', 'patientService'])
                         swal("Operazione eseguita", "Il dottore è stato eliminato dalla lista");
                     })
                     .catch(function (err) {
+                        swal("Operazione non eseguita", "Server error", "error");
                         console.log(err);
                     });
             });

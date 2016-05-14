@@ -1,4 +1,5 @@
 var Patient = require('../models/patient.js');
+var Doctor = require('../models/doctor.js');
 
 module.exports = function (apiRoutesAuth) {
 
@@ -105,6 +106,7 @@ module.exports = function (apiRoutesAuth) {
 
             Patient.findOne(query)
                 .then(function (patient) {
+
                     var promises = [
                         Patient.deletePatient(query)
                     ];
@@ -112,7 +114,7 @@ module.exports = function (apiRoutesAuth) {
                     if (patient.doctors && patient.doctors.length > 0) {
                         var doctors = patient.doctors;
                         doctors.forEach(function (currDoc) {
-                            var newMethod = Patient.removeDoctorToPatient(patientId, currDoc._id);
+                            var newMethod = Doctor.removePatienToDoctor(patientId, currDoc);
                             promises.push(newMethod);
                         });
                     }
@@ -121,43 +123,29 @@ module.exports = function (apiRoutesAuth) {
                         .then(function (results) {
                             res.status(200).json({
                                 "success": true,
-                                "message": "Doctor removed"
+                                "message": "Patient removed"
                             });
-                            return next();
+                            //return next();
                         })
                         .catch(function (error) {
                             res.status(500).json({
                                 "success": false,
-                                "message": "Internal server error"
+                                "message": "One promises failded",
+                                "error": error
                             });
                         });
+
 
                 })
                 .catch(function (err) {
                     res.status(500).json({
                         "success": false,
-                        "message": "Internal server error"
+                        "message": "Internal server error",
+                        "error": err
                     });
                 });
 
-            //Doctor.deleteDoctor(doctorId)
-            //    .then(function (resultDoctor) {
-            //        var res = resultDoctor;
-            //        return Patient.addDoctorToPatient(doctorId);
-            //    })
-            //    .then(function (resultPatient) {
-            //        res.status(200).json({
-            //            "success": true,
-            //            "message": "New patient " + patientId + " added to doctor " + doctorId
-            //        });
-            //        return next();
-            //    })
-            //    .catch(function (error) {
-            //        res.status(500).json({
-            //            "success": false,
-            //            "message": "Internal server error"
-            //        });
-            //    });
+
 
         });
 

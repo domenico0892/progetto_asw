@@ -61,13 +61,13 @@ angular.module('patientService', [])
                 return deferred.promise;
             },
 
-            modifyPatien: function (newDoctor) {
+            modifyPatien: function (patient) {
                 var deferred = $q.defer();
 
                 var req = {
                     method: 'PUT',
                     url: '/api/patient',
-                    data: newDoctor
+                    data: patient
                 };
 
                 $http(req).success(function (data) {
@@ -98,7 +98,8 @@ angular.module('patientService', [])
                     });
 
                 return deferred.promise;
-            },
+            }
+
         };
 
     }]);

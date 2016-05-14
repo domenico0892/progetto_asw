@@ -7,7 +7,7 @@
             <div class="text-center" style="padding: 10px;">
                 <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#addNewPatient">Nuovo Paziente</button>
             </div>
-            <table class="table table-bordered" style="width: 50%;">
+            <table class="table table-bordered" style="width: 70%;">
                 <thead>
                 <tr>
                     <th>#</th>
@@ -29,7 +29,7 @@
                     <!--<td>{{patient.address}}</td>-->
                     <td>
                         <button type="button" class="btn btn-info btn-sm" data-toggle="modal" ng-click="patientDetail(patient)" data-target="#patientDetails">Dettagli</button>
-                        <button type="button" class="btn btn-warning btn-sm" data-toggle="modal" ng-click="setCurrDoctor(patient)" data-target="#patientModify">Modifica</button>
+                        <button type="button" class="btn btn-warning btn-sm" data-toggle="modal" ng-click="setCurrentPatient(patient)" data-target="#patientModify">Modifica</button>
                         <button type="button" class="btn btn-danger btn-sm" ng-click="deletePatient(patient)">Elimina</button>
                     </td>
                 </tr>
@@ -58,13 +58,15 @@
 				<span ng-if="successAddNewPatient" style="text-align: center; color: green;">
 					<h4>{{successAddNewPatient}}</h4>
 				</span>
-                <p><input type="text" class="form-control" placeholder="Nome Dottore" name="input" ng-model="newPatient.name"
+                <p><input type="text" class="form-control" placeholder="Nome Paziente" name="input" ng-model="newPatient.name"
                           ng-pattern="newPatient.name" required ng-trim="false"/></p>
-                <p><input type="text" class="form-control" placeholder="Cognome Dottore" name="input" ng-model="newPatient.surname"
+                <p><input type="text" class="form-control" placeholder="Cognome Paziente" name="input" ng-model="newPatient.surname"
                           ng-pattern="newPatient.surname" required ng-trim="false"/></p>
-                <p><input type="text" class="form-control" placeholder="Specializzazione" name="input" ng-model="newPatient.phone_number"
-                          ng-pattern="newPatient.type" required ng-trim="false"/></p>
-                <p><input type="text" class="form-control" placeholder="Indirizzo studio medico" name="input" ng-model="newPatient.address"
+                <p><input type="text" class="form-control" placeholder="eMail" name="input" ng-model="newPatient.email"
+                          ng-pattern="newPatient.email" required ng-trim="false"/></p>
+                <p><input type="text" class="form-control" placeholder="Telefono" name="input" ng-model="newPatient.phone_number"
+                          ng-pattern="newPatient.phone_number" required ng-trim="false"/></p>
+                <p><input type="text" class="form-control" placeholder="Residenza" name="input" ng-model="newPatient.address"
                           ng-pattern="newPatient.address" required ng-trim="false"/></p>
             </div>
             <div class="modal-footer">
@@ -85,15 +87,49 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Dettagli Dottore <u>{{currPatient.name.substring(0,1)}}. {{currPatient.surname}}</u></h4>
+                <h4 class="modal-title">Dettagli Paziente <u>{{currPatient.name.substring(0,1)}}. {{currPatient.surname}}</u></h4>
             </div>
             <div class="modal-body">
-                <h3>Dettagli dottore</h3>
+                <h3>Dettagli Paziente</h3>
                 Nome: <b>{{currPatient.name}}</b><br>
                 Cognome: <b>{{currPatient.surname}}</b><br>
                 Residente: <b>{{currPatient.address}}</b><br>
                 eMail: <b><a ng-href="mailto:'+ patient.email +'" target="_top">{{currPatient.email}}</a></b><br>
                 Telefono: <b>{{currPatient.phone_number}}</b><br>
+                <h3>Lista dottori associati al paziente</h3>
+                <div ng-if="currPatient.doctorsDetails && currPatient.doctorsDetails.length>0" style="padding-top: 10px;">
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Nome</th>
+                            <th>Cognome</th>
+                            <th>Specializzazione</th>
+                            <th>Residenza</th>
+                            <th>Specializzazione</th>
+                            <!--<th>Operazioni</th>-->
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="doctor in currPatient.doctorsDetails track by $index">
+                            <th scope="row">{{$index + 1}}</th>
+                            <td><b>{{doctor.name}}</b></td>
+                            <td><b>{{doctor.surname}}</b></td>
+                            <td>{{doctor.type}}</td>
+                            <td>{{doctor.address}}</td>
+                            <td>{{doctor.type}}</td>
+                            <!--<td>-->
+                            <!--<button type="button" class="btn btn-info btn-sm" data-toggle="modal" ng-click="doctorDetail(doctor)" data-target="#doctorDetails">Dettagli</button>-->
+                            <!--<button type="button" class="btn btn-warning btn-sm" data-toggle="modal" ng-click="setCurrDoctor(doctor)" data-target="#doctorModify">Modifica</button>-->
+                            <!--<button type="button" class="btn btn-danger btn-sm" ng-click="deleteDoctor(doctor)">Elimina</button>-->
+                            <!--</td>-->
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div ng-if="!currPatient.doctorsDetails || currPatient.doctorsDetails.length <= 0">
+                    <h5>Non ci sono dottori associati a questo profilo.</h5>
+                </div>
             </div>
             <div class="modal-footer">
                 <!--<button type="button" class="btn btn-success btn-sm">Conferma</button>-->
@@ -104,6 +140,7 @@
     </div>
 </div>
 <!--end modal-->
+
 <!--Modal patient modify-->
 <div id="patientModify" class="modal fade" role="dialog">
     <div class="modal-dialog">
@@ -111,20 +148,57 @@
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <!--<button type="button" class="close" data-dismiss="modal">&times;</button>-->
                 <h4 class="modal-title">Modifica <u>{{currPatientToModify.name.substring(0,1)}}. {{currPatientToModify.surname}}</u></h4>
             </div>
             <div class="modal-body">
-                <h3>Modifica dettagli dottore</h3>
+                <h3>Modifica dettagli paziente</h3>
                 Nome: <input type="text" ng-model="currPatientToModify.name"><br>
                 Cognome: <input type="text" ng-model="currPatientToModify.surname"><br>
                 Residenza: <input type="text" ng-model="currPatientToModify.address"><br>
                 eMail: <input type="text" ng-model="currPatientToModify.email"><br>
                 Telefono: <input type="text" ng-model="currPatientToModify.phone_number"><br>
+
+                <h3>Lista dottori associati al paziente</h3>
+                <div ng-if="!currPatientToModify.doctorsDetails || currPatientToModify.doctorsDetails.length <= 0">
+                    <h5>Non ci sono dottori associati a questo profilo.</h5>
+                </div>
+                <div ng-if="currPatientToModify.doctorsDetails && currPatientToModify.doctorsDetails.length>0" style="padding-top: 10px;">
+                    <ul ng-repeat="doctor in currPatientToModify.doctorsDetails track by $index">
+                        <li><a href="" ng-click="removeDoctorToPatient(doctor)"><span class="glyphicon glyphicon-remove"></span></a> <b>{{doctor.name}}</b> <b>{{doctor.surname}}</b></li>
+                    </ul>
+                </div>
+
+                <h5>Associa nuovi dottori: <br>(Le modifiche effettuate sulla lista dottori verranno salvate automaticamente)</h5>
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Nome</th>
+                        <th>Cognome</th>
+                        <th>Specializzazione</th>
+                        <!--<th>Residenza</th>-->
+                        <th>Operazioni</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="doctor in doctors track by $index" ng-if="currPatientToModify.doctors.indexOf(doctor._id) < 0">
+                        <th scope="row">{{$index + 1}}</th>
+                        <td><b>{{doctor.name}}</b></td>
+                        <td><b>{{doctor.surname}}</b></td>
+                        <td>{{doctor.type}}</td>
+                        <!--<td>{{doctor.address}}</td>-->
+                        <td>
+                            <button type="button" class="btn btn-warning btn-sm" data-toggle="modal" ng-click="addNewDoctorToPatient(doctor)"><span class="glyphicon glyphicon-plus"></span></button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-success btn-sm" ng-click="updatePatient(currPatientToModify)" data-dismiss="modal">Conferma</button>
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="forceUpdatePatientsLst()">Close</button>
             </div>
         </div>
 

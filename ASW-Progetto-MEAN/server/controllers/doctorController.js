@@ -91,7 +91,7 @@ module.exports = function (apiRoutesAuth) {
                         "message": "Doctor updated",
                         "doctor": result
                     });
-                    return next();
+                    //return next();
                 })
                 .catch(function (error) {
                     res.status(500).json({
@@ -114,7 +114,7 @@ module.exports = function (apiRoutesAuth) {
                     if (doctor.patietnts && doctor.patietnts.length > 0) {
                         var patients = doctor.patietnts;
                         patients.forEach(function (currPatient) {
-                            var newMethod = Patient.removeDoctorToPatient(currPatient._id, doctorId);
+                            var newMethod = Patient.removeDoctorToPatient(currPatient, doctorId);
                             promises.push(newMethod);
                         });
                     }
@@ -123,14 +123,16 @@ module.exports = function (apiRoutesAuth) {
                         .then(function (results) {
                             res.status(200).json({
                                 "success": true,
-                                "message": "Doctor removed"
+                                "message": "Doctor removed",
+                                "result": results
                             });
-                            return next();
+                            //return next();
                         })
                         .catch(function (error) {
                             res.status(500).json({
                                 "success": false,
-                                "message": "Internal server error"
+                                "message": "One promises failded",
+                                "error": error
                             });
                         });
 
@@ -138,28 +140,12 @@ module.exports = function (apiRoutesAuth) {
                 .catch(function (err) {
                     res.status(500).json({
                         "success": false,
-                        "message": "Internal server error"
+                        "message": "Internal server error",
+                        "error": err
                     });
                 });
 
-            //Doctor.deleteDoctor(doctorId)
-            //    .then(function (resultDoctor) {
-            //        var res = resultDoctor;
-            //        return Patient.addDoctorToPatient(doctorId);
-            //    })
-            //    .then(function (resultPatient) {
-            //        res.status(200).json({
-            //            "success": true,
-            //            "message": "New patient " + patientId + " added to doctor " + doctorId
-            //        });
-            //        return next();
-            //    })
-            //    .catch(function (error) {
-            //        res.status(500).json({
-            //            "success": false,
-            //            "message": "Internal server error"
-            //        });
-            //    });
+
 
         });
 

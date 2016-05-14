@@ -122,6 +122,7 @@ module.exports = {
                     result.phone_number = patient.phone_number;
                     result.email = patient.email;
                     result.doctors = patient.doctors;
+
                 }
 
                 result.save(function (err) {
@@ -131,6 +132,20 @@ module.exports = {
                         qdef.resolve(result);
                     }
                 });
+            }
+        });
+
+        return (qdef.promise);
+    },
+
+    deletePatient: function(query) {
+        var qdef = Q.defer();
+
+        patientModel.remove(query).exec(function (err, result) {
+            if(err) {
+                qdef.reject(err);
+            } else {
+                qdef.resolve(result);
             }
         });
 
